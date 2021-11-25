@@ -1,5 +1,5 @@
 FROM python
-COPY ../../spiders
+COPY ../../spiders /
 RUN apt clean \
     && apt-get update\
 
