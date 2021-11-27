@@ -1,5 +1,12 @@
 FROM python
 COPY spiders/* /spiders/
-RUN python -m pip install --upgrade pip \
+RUN cd spiders \
+    && sudo curl -sS -o - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add \
+    && sudo bash -c "echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' >> /etc/apt/sources.list.d/google-chrome.list" \
+    && sudo apt -y update \
+    && sudo apt -y install google-chrome-stable \
+    && wget https://chromedriver.storage.googleapis.com/96.0.4664.45/chromedriver_linux64.zip\
+    && unzip chromedriver_linux64.zip
+    && python -m pip install --upgrade pip \
     && pip install -r /spiders/requirements.txt
 CMD /bin/bash
