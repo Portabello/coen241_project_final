@@ -25,7 +25,7 @@ class scheduler:
                 continue
             self.channel.basic_publish(exchange='', routing_key=domain, body = link)
             print(link, "added to mq")
-            self.client.links.links.delete(cursor)
+            self.client.links.links.delete_one(cursor)
 
     def __del__(self):
         self.connection.close()
