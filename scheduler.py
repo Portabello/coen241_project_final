@@ -16,7 +16,7 @@ class scheduler:
             link = cursor["link"]
             if self.client.links.visited.find_one({'_id': link}):
                 print(link, "already visited")
-                self.client.links.links.delete(cursor)
+                self.client.links.links.delete_one(cursor)
                 continue
             self.client.links.visited.insert_one({'_id': link})
             domain = urlparse(link).netloc
