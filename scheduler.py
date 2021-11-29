@@ -11,17 +11,18 @@ class scheduler:
         for domain in self.domains:
             self.channel.queue_declare(queue=domain)
     def scan(self):
-        cursors = self.client.db.link.find()
+        cursors = self.client.links.links.find()
         for cursor in cursors:
-            if self.client.db.visited.find({'key': cursor.link}):
-                self.client.db.link.delete(cursor)
+            if self.client.links.visited.find_one({'_id': cursor.link}):
+                self.client.links.links.delete(cursor)
                 continue
+            self.client.links.visited.insertOne({'_id': cursor.link})
             domain = urlparse(cursor.link).netloc
             if domain not in self.domains:
                 continue
             self.channel.basic_publish(exchange='', routing_key=domain, body = cursor.link)
             print(cursor.link, "added to mq")
-            self.client.db.link.delete(cursor)
+            self.client.links.links.delete(cursor)
 
     def __del__(self):
         self.connection.close()
