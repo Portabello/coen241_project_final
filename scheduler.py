@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 import pika
-import time
+from time import sleep
 from urllib.parse import urlparse
 
 class scheduler:
@@ -38,4 +38,5 @@ if __name__ == "__main__":
     s = scheduler("172.17.0.2", "172.17.0.3")
     while(True):
         s.scan()
+        print("sleeping")
         sleep(20)
