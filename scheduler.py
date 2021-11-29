@@ -18,7 +18,7 @@ class scheduler:
                 print(link, "already visited")
                 self.client.links.links.delete(cursor)
                 continue
-            self.client.links.visited.insertOne({'_id': link})
+            self.client.links.visited.insert_one({'_id': link})
             domain = urlparse(link).netloc
             if domain not in self.domains:
                 print(link, "not in domain")
