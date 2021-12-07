@@ -50,4 +50,4 @@ class Cnn_spiderSpider(scrapy.Spider):
 
         time.sleep(600)
         print("sleeping")
-        yield response.follow(url=self.start_urls[0], callback=self.parse)
+        yield response.follow(url=self.start_urls[0], callback=self.parse, dont_filter=True)
