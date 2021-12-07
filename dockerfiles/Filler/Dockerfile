@@ -9,4 +9,4 @@ RUN cd spiders \
     && unzip chromedriver_linux64.zip \
     && python -m pip install --upgrade pip \
     && pip install -r /spiders/requirements.txt
-CMD scrapy runspider /spiders/backlink_spider.py
+CMD scrapy runspider /spiders/cnn_spider_filler.py
