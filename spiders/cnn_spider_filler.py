@@ -29,15 +29,14 @@ class Cnn_spiderSpider(scrapy.Spider):
         search_input.send_keys("*")
         search_btn = self.driver.find_element_by_xpath("(//button[contains(@class, 'Flex-sc-1')])[2]")
         search_btn.click()
-        self.html = [driver.page_source]
 
         i = 0
         while i < 10:
             i += 1
             time.sleep(5)
-            next_btn = driver.find_element_by_xpath("(//div[contains(@class, 'pagination-arrow')])[2]")
+            next_btn = self.driver.find_element_by_xpath("(//div[contains(@class, 'pagination-arrow')])[2]")
             next_btn.click()
-            resp = Selector(text=driver.page_source)
+            resp = Selector(text=self.driver.page_source)
             results = resp.xpath("//div[@class='cnn-search__result cnn-search__result--article']/div/h3/a")
             for result in results:
                 title = result.xpath(".//text()").get()
