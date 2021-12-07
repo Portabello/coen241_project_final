@@ -25,13 +25,14 @@ class Cnn_spiderSpider(scrapy.Spider):
     # using scrapy's native parse to first scrape links on result pages
     def parse(self, response):
         self.driver.get("https://www.cnn.com")
+        time.sleep(1)
         search_input = self.driver.find_element_by_id("footer-search-bar")
         search_input.send_keys("*")
         search_btn = self.driver.find_element_by_xpath("(//button[contains(@class, 'Flex-sc-1')])[2]")
         search_btn.click()
 
         i = 0
-        while i < 10:
+        while i < 1:
             i += 1
             time.sleep(5)
             try:
