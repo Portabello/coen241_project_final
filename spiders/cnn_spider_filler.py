@@ -16,17 +16,20 @@ class Cnn_spiderSpider(scrapy.Spider):
         chrome_options = Options()
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--no-sandbox")
-        driver = webdriver.Chrome(executable_path=str('./chromedriver'), options=chrome_options)
-        driver.get("https://www.cnn.com")
-        search_input = driver.find_element_by_id("footer-search-bar")
-        search_input.send_keys("*")
-        search_btn = driver.find_element_by_xpath("(//button[contains(@class, 'Flex-sc-1')])[2]")
-        search_btn.click()
-        self.html = [driver.page_source]
+        self.driver = webdriver.Chrome(executable_path=str('./chromedriver'), options=chrome_options)
+
         self.mongo_client = pymongo.MongoClient(host=['172.17.0.2'], serverSelectionTimeoutMS = 3000)
         self.database = self.mongo_client["links"]
         self.col_db = self.database["links"]
 
+    # using scrapy's native parse to first scrape links on result pages
+    def parse(self, response):
+        self.driver.get("https://www.cnn.com")
+        search_input = self.driver.find_element_by_id("footer-search-bar")
+        search_input.send_keys("*")
+        search_btn = self.driver.find_element_by_xpath("(//button[contains(@class, 'Flex-sc-1')])[2]")
+        search_btn.click()
+        self.html = [driver.page_source]
 
         i = 0
         while i < 10:
@@ -34,12 +37,7 @@ class Cnn_spiderSpider(scrapy.Spider):
             time.sleep(5)
             next_btn = driver.find_element_by_xpath("(//div[contains(@class, 'pagination-arrow')])[2]")
             next_btn.click()
-            self.html.append(driver.page_source)
-
-    # using scrapy's native parse to first scrape links on result pages
-    def parse(self, response):
-        for page in self.html:
-            resp = Selector(text=page)
+            resp = Selector(text=driver.page_source)
             results = resp.xpath("//div[@class='cnn-search__result cnn-search__result--article']/div/h3/a")
             for result in results:
                 title = result.xpath(".//text()").get()
