@@ -48,6 +48,6 @@ class Cnn_spiderSpider(scrapy.Spider):
                 new_entry = {"url":full_url}
                 self.col_db.insert_one(new_entry)
 
-        time.sleep(600)
+        time.sleep(15)
         print("sleeping")
         yield response.follow(url=self.start_urls[0], callback=self.parse, dont_filter=True)
