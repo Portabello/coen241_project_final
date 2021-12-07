@@ -46,7 +46,7 @@ class Cnn_spiderSpider(scrapy.Spider):
                 link = result.xpath(".//@href").get()[13:]
                 full_url = result.xpath(".//@href").get()
                 new_entry = {"url":full_url}
-                col_db.insert_one(new_entry)
+                self.col_db.insert_one(new_entry)
 
         time.sleep(600)
         print("sleeping")
