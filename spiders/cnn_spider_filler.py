@@ -24,8 +24,8 @@ class Cnn_spiderSpider(scrapy.Spider):
         search_btn.click()
         self.html = [driver.page_source]
         self.mongo_client = pymongo.MongoClient(host=['172.17.0.2'], serverSelectionTimeoutMS = 3000)
-        self.database = mongo_client["links"]
-        self.col_db = database["links"]
+        self.database = self.mongo_client["links"]
+        self.col_db = self.database["links"]
 
 
         i = 0
