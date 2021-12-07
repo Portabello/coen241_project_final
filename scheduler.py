@@ -11,6 +11,7 @@ class scheduler:
         self.domains = set(["www.cnn.com"])
         for domain in self.domains:
             self.channel.queue_declare(queue=domain)
+        print("scheduler started")
     def scan(self):
         cursors = self.client.links.links.find()
         for cursor in cursors:
