@@ -12,7 +12,7 @@ class scheduler:
         for domain in self.domains:
             self.channel.queue_declare(queue=domain)
     def scan(self):
-        cursors = self.client.links.links.find().limit(20)
+        cursors = self.client.links.links.find()
         for cursor in cursors:
             link = cursor["url"]
             print(link)
