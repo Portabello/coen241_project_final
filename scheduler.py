@@ -14,7 +14,7 @@ class scheduler:
     def scan(self):
         cursors = self.client.links.links.find()
         for cursor in cursors:
-            link = cursor["link"]
+            link = cursor["url"]
             print(link)
             if self.client.links.visited.find_one({'_id': link}):
                 print("already visited")
