@@ -34,17 +34,19 @@ class Cnn_spiderSpider(scrapy.Spider):
         while i < 10:
             i += 1
             time.sleep(5)
-            next_btn = self.driver.find_element_by_xpath("(//div[contains(@class, 'pagination-arrow')])[2]")
-            next_btn.click()
-            resp = Selector(text=self.driver.page_source)
-            results = resp.xpath("//div[@class='cnn-search__result cnn-search__result--article']/div/h3/a")
-            for result in results:
-                title = result.xpath(".//text()").get()
-                link = result.xpath(".//@href").get()[13:]
-                full_url = result.xpath(".//@href").get()
-                new_entry = {"url":full_url}
-                self.col_db.insert_one(new_entry)
-
+            try:
+                next_btn = self.driver.find_element_by_xpath("(//div[contains(@class, 'pagination-arrow')])[2]")
+                next_btn.click()
+                resp = Selector(text=self.driver.page_source)
+                results = resp.xpath("//div[@class='cnn-search__result cnn-search__result--article']/div/h3/a")
+                for result in results:
+                    title = result.xpath(".//text()").get()
+                    link = result.xpath(".//@href").get()[13:]
+                    full_url = result.xpath(".//@href").get()
+                    new_entry = {"url":full_url}
+                    self.col_db.insert_one(new_entry)
+            except:
+                continue
         time.sleep(15)
         print("sleeping")
         yield response.follow(url=self.start_urls[0], callback=self.parse, dont_filter=True)
