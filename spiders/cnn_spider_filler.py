@@ -32,7 +32,7 @@ class Cnn_spiderSpider(scrapy.Spider):
         search_btn.click()
 
         i = 0
-        while i < 1:
+        while i < 3:
             i += 1
             time.sleep(5)
             try:
@@ -48,6 +48,7 @@ class Cnn_spiderSpider(scrapy.Spider):
                     self.col_db.insert_one(new_entry)
             except:
                 continue
-        time.sleep(15)
+
         print("sleeping")
+        time.sleep(3600)
         yield response.follow(url=self.start_urls[0], callback=self.parse, dont_filter=True)
