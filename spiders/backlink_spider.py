@@ -12,7 +12,7 @@ from time import sleep
 class Backlink_spiderSpider(scrapy.Spider):
     name = "cnn"
     allowed_domains = ['www.cnn.com']
-    start_urls = ['https://www.cnn.com']
+    #start_urls = ['https://www.cnn.com']
 
     def __init__(self, **kwargs):
 
@@ -20,19 +20,21 @@ class Backlink_spiderSpider(scrapy.Spider):
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--no-sandbox")
         driver = webdriver.Chrome(executable_path=str('./chromedriver'), options=chrome_options)
-
+    
         rabbitURL = "172.17.0.3"
         connection = pika.BlockingConnection(pika.ConnectionParameters(rabbitURL))
         channel = connection.channel()
         channel.queue_declare(queue="www.cnn.com")
 
-        for i in range(10):
-            method_frame, header_frame, body = channel.basic_get(queue = "www.cnn.com", auto_ack=True)
-            print(body)
 
-        connection.close()
+        method_frame, header_frame, body = channel.basic_get(queue = "www.cnn.com", auto_ack=True)
+        # print("##############################")
+        print(body)
+        # print("################################")
+        body_decode = body.decode("utf-8")
+        #connection.close()
 
-        driver.get(body)
+        driver.get(body_decode)
         self.html = [driver.page_source]
 
 
@@ -45,7 +47,13 @@ class Backlink_spiderSpider(scrapy.Spider):
             link = resp.xpath(".//@href").get()[13:]
             full_url = resp.xpath(".//@href").get()
             yield response.follow(url=link, callback=self.parse_article, meta={"url": full_url, "title": title})
-
+            rabbitURL = "172.17.0.3"
+            connection = pika.BlockingConnection(pika.ConnectionParameters(rabbitURL))
+            channel = connection.channel()
+            channel.queue_declare(queue="www.cnn.com")
+            method_frame, header_frame, body = channel.basic_get(queue = "www.cnn.com", auto_ack=True)
+            body_decode = body.decode("utf-8")
+            yield response.follow(url=body_decode, callback=self.parse)
 
     def parse_time(self, unparsed_time):
         try:
@@ -87,12 +95,12 @@ class Backlink_spiderSpider(scrapy.Spider):
         mongo_client = pymongo.MongoClient(host=['172.17.0.2'], serverSelectionTimeoutMS = 3000)
         database = mongo_client["headlines"]
         col_db = database["info"]
-        new_entry = {"url": , "title": , "time": }
+        new_entry = {"url": url, "title": title, "time": time}
         x = col_db.insert_one(new_entry)
 
-        yield {
-            "url": url,
-            "backlinks": backlinks,
-            "title": self.parse_title(title),
-            "time": parsed_time
-    }
+        backlinks_databse = mongo_client["links"]
+        backinks_col = backlinks_database["links"]
+        for links in backlinks:
+            if "https://www.cnn" in links:
+                new_entry = {"link": links}
+                x = backlinks_col.insert_one(new_entry)
